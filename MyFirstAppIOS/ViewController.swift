@@ -8,7 +8,8 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
+
 
     // OUTLETS
     @IBOutlet var nameLabel: UILabel!
@@ -48,12 +49,26 @@ class ViewController: UIViewController {
         yearStepper.minimumValue = 1990
         yearStepper.maximumValue = 2018
         updateDOBValues()
+        
+        
     }
 
     func updateDOBValues() {
         dayLabel.text = "\(Int(dayValue))"
         monthLabel.text = "\(Int(monthValue))"
         yearLabel.text = "\(Int(yearValue))"
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == nameText {
+            emailText.becomeFirstResponder()
+        } else if textField == emailText {
+            passwordText.becomeFirstResponder()
+        } else {
+            passwordText.resignFirstResponder()
+            
+        }
+        return true
     }
     
     // IBACTIONS
@@ -75,23 +90,34 @@ class ViewController: UIViewController {
         updateDOBValues()
     }
     
-    @IBAction func emailNotifactionSwitchTapped(_ sender: UISwitch) {
-        
-        if(emailNotificationToggle.isOn){
-            print("Notifications on")
-        } else {
-            print("Notifications off")
-        }
-    }
     
     @IBAction func saveButton(_ sender: Any) {
-        print("Save Button Tapped")
-        print(nameText.text!)
-        print(emailText.text!)
-        print(passwordText.text!)
+        //print("Save Button Tapped")
         
-        print("DOB: \(Int(dayValue)) / \(Int(monthValue)) / \(Int(yearValue))")
-        print("Notifications: ")
+        let nameValue = nameText.text
+        let emailValue = emailText.text
+        let passwordValue = passwordText.text
+        
+        if ((nameValue?.isEmpty)! || (emailValue?.isEmpty)! || (passwordValue?.isEmpty)!){
+            
+            let alert = UIAlertController(title: "Alert", message: "All Fields are required to be filled in", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
+            
+        } else {
+            print(nameValue!, "\n", emailValue!,"\n",passwordValue!)
+            
+            print("DOB: \(Int(dayValue)) / \(Int(monthValue)) / \(Int(yearValue))")
+            if emailNotificationToggle.isOn {
+                print("Notifications: ON")
+            } else {
+                print("Notications: OFF")
+            }
+            
+        }
+   
         
     }
     
@@ -99,11 +125,15 @@ class ViewController: UIViewController {
     @IBAction func chooseFavLanguageTapped(_ sender: UISegmentedControl) {
         
         if favouriteLanguageSegmentControl.selectedSegmentIndex == 0 {
-            print("sWIFT")
+            favouriteLanguage = "Swift"
         } else if favouriteLanguageSegmentControl.selectedSegmentIndex == 1 {
-            print("java")
-            
+            favouriteLanguage = "Java"
+        } else if favouriteLanguageSegmentControl.selectedSegmentIndex == 2 {
+            favouriteLanguage = "Python"
+        } else {
+            favouriteLanguage = "Javascript"
         }
+        print(favouriteLanguage)
         
     }
     
